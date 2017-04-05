@@ -69,43 +69,42 @@ function execSelector(state, attrs, children) {
 }
 function hyperscript(selector) {
 	// Because sloppy mode sucks
-	var attrs = arguments[1], start = 2, children
+	var attrs = {}, start = 1, children
 	if (selector == null || typeof selector !== "string" && typeof selector !== "function" && typeof selector.view !== "function") {
 		throw Error("The selector must be either a string or a component.");
 	}
 	if (typeof selector === "string") {
 		var cached = selectorCache[selector] || compileSelector(selector)
 	}
-	if (attrs == null) {
-		attrs = {}
-	} else if (typeof attrs !== "object" || attrs.tag != null || Array.isArray(attrs)) {
-		attrs = {}
-		start = 1
-	}
 	if (arguments.length === start + 1) {
-		if (isString(arguments[start] && arguments[start].startsWith('.'))
-		  {
-		      attrs.class = arguments[start].substring(1).replace('.', ' ')
-		  }
-		  else
-		  {
-		      children = arguments[start]
-		  }
-	  if (!Array.isArray(children)) children = [children]
-	     } else {
-		children = []
-		while (start < arguments.length) {
-	          if (isString(arguments[start] && arguments[start].startsWith('.'))
-		  {
-		      attrs.class = arguments[start].substring(1).replace('.', ' ')
-		  }
-		  else
-		  {
-		    children.push(arguments[start])
-		  }
-		  start++
+		if (isString(arguments[start]) && (arguments[start].startsWith('.'))){
+			attrs.class = arguments[start].substring(1).replace('.', ' ')
 		}
-	}
+		else if (typeof arguments[start] === "object" && !Array.isArray(arguments[start])) {
+			attrs = Object.assign(attrs, arguments[start])
+		}
+		else
+		{
+			children = arguments[start]
+		}
+		if (!Array.isArray(children)) children = [children]
+		} else {
+			children = []
+			while (start < arguments.length) {
+				if (isString(arguments[start]) && (arguments[start].startsWith('.')))
+				{
+					attrs.class = arguments[start].substring(1).replace('.', ' ')
+				}
+				else if (typeof arguments[start] === "object" && !Array.isArray(arguments[start])) {
+					attrs = Object.assign(attrs, arguments[start])
+				}
+				else
+				{
+					children.push(arguments[start])
+				}
+				start++
+			}
+		}
 	var normalized = Vnode.normalizeChildren(children)
 	if (typeof selector === "string") {
 		return execSelector(cached, attrs, normalized)
