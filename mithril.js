@@ -17,6 +17,9 @@ Vnode.normalizeChildren = function normalizeChildren(children) {
 var selectorParser = /(?:(^|#|\.)([^#\.\[\]]+))|(\[(.+?)(?:\s*=\s*("|'|)((?:\\["'\]]|.)*?)\5)?\])/g
 var selectorCache = {}
 var hasOwn = {}.hasOwnProperty
+function isString(x) {
+  return ((typeof x === 'string') && (x.length > 0))
+}
 function compileSelector(selector) {
 	var match, tag = "div", classes = [], attrs = {}
 	while (match = selectorParser.exec(selector)) {
@@ -80,11 +83,28 @@ function hyperscript(selector) {
 		start = 1
 	}
 	if (arguments.length === start + 1) {
-		children = arguments[start]
-		if (!Array.isArray(children)) children = [children]
-	} else {
+		if (isString(arguments[start] && arguments[start].startsWith('.'))
+		  {
+		      attrs.class = arguments[start].substring(1).replace('.', ' ')
+		  }
+		  else
+		  {
+		      children = arguments[start]
+		  }
+	  if (!Array.isArray(children)) children = [children]
+	     } else {
 		children = []
-		while (start < arguments.length) children.push(arguments[start++])
+		while (start < arguments.length) {
+	          if (isString(arguments[start] && arguments[start].startsWith('.'))
+		  {
+		      attrs.class = arguments[start].substring(1).replace('.', ' ')
+		  }
+		  else
+		  {
+		    children.push(arguments[start])
+		  }
+		  start++
+		}
 	}
 	var normalized = Vnode.normalizeChildren(children)
 	if (typeof selector === "string") {
