@@ -78,7 +78,8 @@ function hyperscript(selector) {
 	}
 	if (arguments.length === start + 1) {
 		if (isString(arguments[start]) && (arguments[start].startsWith('.'))){
-			attrs.class = arguments[start].substring(1).replace('.', ' ')
+			console.log('hello', arguments[start])
+			attrs.className = arguments[start].substring(1).replace('.', ' ')
 		}
 		else if (typeof arguments[start] === "object" && !Array.isArray(arguments[start])) {
 			attrs = Object.assign(attrs, arguments[start])
@@ -93,7 +94,8 @@ function hyperscript(selector) {
 			while (start < arguments.length) {
 				if (isString(arguments[start]) && (arguments[start].startsWith('.')))
 				{
-					attrs.class = arguments[start].substring(1).replace('.', ' ')
+					console.log('hello 2', arguments[start])
+					attrs.className = arguments[start].substring(1).replace('.', ' ')
 				}
 				else if (typeof arguments[start] === "object" && !Array.isArray(arguments[start])) {
 					attrs = Object.assign(attrs, arguments[start])
